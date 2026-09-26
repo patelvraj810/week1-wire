@@ -1,16 +1,67 @@
 {
-  "_draft": "Minimal version the gate needs. Full schema + _guess comments come in the playbook block.",
+  "_about": "Campaign Manager playbook for the first Reign motion. Keys from the stub are kept as-is. Anything the stub left empty or undefined has a sibling '_guess' key explaining my assumption. The reign_gate MCP server reads this file at runtime.",
+
   "playbook_id": "reign-first-motion",
   "version": "0.1.0",
+  "_guess_version": "Stub doesn't say how playbooks version. Guess: semver per playbook. Every audit record stores playbook_id + version, so you can prove which rules were live when an action happened. Changing approvers or kill criteria = minor bump; changing audience or trigger = new playbook.",
+  "status": "armed",
+  "_guess_status": "Not in the stub. 'armed' = drafts and internal handoffs allowed, nothing goes to the account. Other values: 'live', 'paused', 'killed'.",
+
   "product": "reign",
-  "audience": {"icp_id": "icp@0.1.0", "segment": "dsib-bank"},
-  "trigger": [{"type": "regulatory", "id": "SR-26-2"}],
+
+  "audience": {
+    "icp_id": "icp@0.1.0",
+    "segment": "dsib-bank",
+    "financial_services": true,
+    "routing": "infer_lane_from_title",
+    "lanes": {"risk": ["Chief Audit Executive", "Head of Model Risk Management", "Chief Risk Officer"],
+              "engineering": ["VP Engineering", "Head of AI Platform", "CTO"]},
+    "_guess_audience": "icp_id + segment come from the stub. The playbook POINTS to the shared ICP instead of copying it, so a new launch swaps these two fields and nothing else. 'financial_services' is repeated here so the gate knows R-17 is required without re-reading the ICP. Lanes come from Paul: 'Route them without asking.'"
+  },
+
+  "trigger": [
+    {"type": "regulatory", "id": "SR-26-2",
+     "source": "https://www.federalreserve.gov/supervisionreg/srletters/SR2602a1.pdf",
+     "angle": "SR 26-2 excludes generative and agentic AI from its scope; brief the audit gap that leaves."},
+    {"type": "regulatory", "id": "DORA", "enabled": false,
+     "_note": "Fallback trigger, not built this round."}
+  ],
+  "_guess_trigger": "Stub shows one trigger object. Guess: a list, because Paul names two for the bank (SR 26-2, DORA) and one playbook shouldn't be cloned per regulation. Each trigger can be switched off on its own.",
+
   "channel": "briefing",
+  "_guess_channel": "Stub lists 'briefing' but doesn't define it. Guess: a Reign-produced, sourced brief handed to the internal account owner, PLUS a calendar hold for the Executive Assurance Briefing. Not a Calendly link sent cold, and not an email sequence. Nothing goes to the account until the briefing is booked (Paul's rule).",
+
   "approval": {
     "principals": ["Paul (CEO)"],
-    "approvers": ["Dana Whitfield (iTmethods account owner, fictional)"]
+    "approvers": ["Dana Whitfield (iTmethods account owner, fictional)"],
+    "send_requires_named_approver": true,
+    "bank_gate": "no_outbound_until_briefing_booked",
+    "trigger_exception": "brief may go to the internal account owner only",
+    "_guess_approval": "Stub says only that approval must name a human if the channel can send. Split into 'principals' (who authorized this CLASS of action, per R-17) and 'approvers' (who approves each individual send). The gate rejects anyone not on these lists."
   },
+
   "kill_switch": false,
-  "kill_criteria": [],
-  "audit": {"rule": "R-17", "policy": {"fs": "required", "non_fs": "on_by_default"}}
+  "kill_criteria": [
+    {"id": "unaudited-action", "rule": "any agent action without an audit record", "action": "kill immediately"},
+    {"id": "sloppy-briefs", "rule": "2 or more briefs rejected by the approver as inaccurate or generic", "action": "pause and review SKILL.md"},
+    {"id": "no-traction", "rule": "0 briefings booked after 10 briefs handed off", "action": "pause; CRO reviews targeting"},
+    {"id": "wrong-audience", "rule": "any brief addressed to a segment not active in the ICP", "action": "kill immediately"}
+  ],
+  "_guess_kill_criteria": "Stub: 'kill_criteria is how CRO stops a motion that goes sloppy.' Guess: named rules with a set action. The CRO flips kill_switch; the gate then blocks every action, which is tested. No email-style metrics (bounce, open rate) because this motion doesn't send email.",
+  "kill_owner": "CRO",
+
+  "audit": {
+    "rule": "R-17",
+    "policy": {"fs": "required", "non_fs": "on_by_default"},
+    "fields": ["actor", "principal", "action", "object", "purpose", "sources", "send", "approver"],
+    "store": "1-artifact/audit/audit-log.jsonl",
+    "write_before_action": true,
+    "_guess_audit": "Stub: 'audit should satisfy R-17 when the audience is FS.' Fields are R-17's list. 'on_by_default' for non-FS follows Paul's stricter rule: 'If you cannot leave an audit trail, it does not send.'"
+  },
+
+  "next_swap": {
+    "audience": {"icp_id": "icp@0.1.0", "segment": "biopharma-quality"},
+    "trigger": [{"type": "regulatory", "id": "FDA-PCCP"}],
+    "_note": "Paul's 'one playbook we can reuse on the next product launch': change these two fields; gate, skill and evals stay the same. Verify PCCP scope first (applies to AI-enabled medical devices, not pharma broadly)."
+  }
 }
