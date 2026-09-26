@@ -15,9 +15,9 @@ I reviewed both files before committing.
 Used for the map only. I checked the key SR 26-2 claim against the Federal Reserve's own text.
 
 ## 3. Explain the code to me (Claude)
-> I don't understand all of these files yet. Explain each file you created in simple English: what it does and why it's needed. Don't change anything, just explain.
+> I don't fully understand all of these files yet. Explain each file you created in simple English: what it does and why it's needed. Don't change anything, just explain.
 
-I wanted to be able to defend every file myself, not just ship it.
+I wanted to be able to understand every file myself, not just ship it.
 
 ## 4. Question the design (Claude)
 > Do we really need our own MCP server? Why not use HubSpot's or Slack's MCP directly, since they already exist? Is the one you built just a HubSpot connector?
