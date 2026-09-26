@@ -8,6 +8,7 @@
 |---|---|
 | Decide | Reconciled Paul's notes into `decisions.md`; wrote the living ICP; added a "why the bank, not pharma or defense" table. |
 | Learn | ChatGPT overview of the four regulations → Fed primary source for SR 26-2 → found GenAI and agentic AI are excluded (see `3-learned.md`). Ran over time here. |
+| Build: gate | `reign_gate` MCP server + 10 governance tests (all block as expected) + an end-to-end run of 7 real MCP tool calls: 4 allowed, 3 blocked, all in `audit/audit-log.jsonl`. |
 
 ## Design decisions I rethought
 
@@ -19,7 +20,10 @@
 
 ## What failed / where I got stuck
 
--
+- **Ran ~12 min over in Learn.** Reading the primary source took longer than the timebox. Worth it: it flipped my assumption about SR 26-2. Paid for it by building the gate before anything else.
+- **MCP server wouldn't start.** The client only said `McpError: Connection closed`, which tells you nothing. Next experiment: run the server directly instead of through the client. That showed the real error: I'd counted parent folders wrong (`parents[2]` instead of `parents[3]`), so it looked for `1-artifact/1-artifact/playbook/...`. One-line fix. Lesson: when an MCP client says "connection closed", run the server by hand first.
+- **Lost the link to my laptop mid-block.** My AI pair (Claude in Cowork) builds on my machine through a desktop bridge; it dropped at the start of the build. Built and tested in its cloud workspace instead, then copied the files over when the link came back.
+- **Can't push from the AI's shell.** It has no GitHub login (by design: I'm not handing it a token). It commits; I run `git push` myself.
 
 ## Prompts, skills and configs
 

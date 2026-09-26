@@ -1,0 +1,37 @@
+{
+  "_note": "FICTIONAL. No real bank, person or contact details. Fields marked [INVENTED] are my guesses for a realistic Canadian D-SIB.",
+  "accounts": [
+    {
+      "id": "acct-northmere",
+      "name": "Northmere Financial Group (fictional)",
+      "segment": "dsib-bank",
+      "financial_services": true,
+      "employees": 48000,
+      "us_operations": true,
+      "_us_operations": "[INVENTED] gives the SR 26-2 angle: US banking arm over $30B in assets",
+      "relationship": "existing_forge_customer",
+      "internal_owner": "Dana Whitfield (iTmethods account owner, fictional)",
+      "briefing_booked": false,
+      "has_risk_committee": true,
+      "signals": ["agents in pilot on internal ops (fictional)", "US subsidiary in SR 26-2 scope (fictional)"],
+      "contacts": [
+        {"name": "Priya Raman (fictional)", "title": "Chief Audit Executive", "lane": "risk"},
+        {"name": "Marc Tessier (fictional)", "title": "Head of Model Risk Management", "lane": "risk"},
+        {"name": "Owen Hartley (fictional)", "title": "VP Engineering, AI Platform", "lane": "engineering"}
+      ]
+    },
+    {
+      "id": "acct-no-committee",
+      "name": "Ridgeway Trust (fictional)",
+      "segment": "dsib-bank",
+      "financial_services": true,
+      "employees": 9000,
+      "relationship": "prospect",
+      "internal_owner": "Dana Whitfield (iTmethods account owner, fictional)",
+      "briefing_booked": false,
+      "has_risk_committee": false,
+      "_why": "test account for Rob's rule: no risk committee = not a fit",
+      "contacts": []
+    }
+  ]
+}

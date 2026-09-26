@@ -1,0 +1,16 @@
+{
+  "_draft": "Minimal version the gate needs. Full schema + _guess comments come in the playbook block.",
+  "playbook_id": "reign-first-motion",
+  "version": "0.1.0",
+  "product": "reign",
+  "audience": {"icp_id": "icp@0.1.0", "segment": "dsib-bank"},
+  "trigger": [{"type": "regulatory", "id": "SR-26-2"}],
+  "channel": "briefing",
+  "approval": {
+    "principals": ["Paul (CEO)"],
+    "approvers": ["Dana Whitfield (iTmethods account owner, fictional)"]
+  },
+  "kill_switch": false,
+  "kill_criteria": [],
+  "audit": {"rule": "R-17", "policy": {"fs": "required", "non_fs": "on_by_default"}}
+}
