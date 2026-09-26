@@ -1,6 +1,6 @@
 # Process log
 
-**Build clock:** started 2:00 p.m. · stopped [fill in]
+**Build clock:** started 2:00 p.m. · stopped 4:55 p.m. (2 h 55 min)
 
 I worked with Claude (Cowork) as my partner the whole time. I made the decisions and checked the work. Claude did a lot of the research legwork, wrote most of the code, and drafted documents for me to review. My prompts are in `1-artifact/skill/trigger-brief/prompts/prompts.md`.
 
