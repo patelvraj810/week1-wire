@@ -1,41 +1,40 @@
 # Process log
 
-**Build clock:** started 2:00 p.m. · stopped [fill in]. I paired with Claude (Cowork) the whole time. I made the calls and checked the work; Claude did research legwork, code and drafts. Prompts: `1-artifact/skill/trigger-brief/prompts/prompts.md`.
+**Build clock:** started 2:00 p.m. · stopped [fill in]
 
-## What I did, in order
+I worked with Claude (Cowork) as my partner the whole time. I made the decisions and checked the work. Claude did a lot of the research legwork, wrote most of the code, and drafted documents for me to review. My prompts are in `1-artifact/skill/trigger-brief/prompts/prompts.md`.
 
-| Step | What happened |
-|---|---|
-| Decide | Reconciled Paul's notes (`decisions.md`). Bank = armed, not contacted. 40 meetings vs precision = sequencing. Defense waits for Rob. One shared ICP. Chose the bank because R-17 is only *required* there. |
-| Learn | ChatGPT for a map of 4 regulations → Fed's own text for SR 26-2 → found AI agents are **excluded** (`3-learned.md`). |
-| Gate | `reign_gate` MCP server: audit record first, named human for sends, bank blocked until briefing. 10 tests, all block. |
-| Skill | `SKILL.md` + brief checker. v1 failed, v2 passed 9/9. |
-| Playbook | Campaign Manager JSON with a `_guess` on every gap + `schema-guesses.md`. |
-| HubSpot | With ~55 min left: sandbox company + 3 fictional contacts. Gate reads them from HubSpot; brief → **note**, send → **approval task**. Checked in HubSpot. Then deleted the old local `crm_outbox/` JSON copies, since HubSpot now holds the real ones (folder is only a fallback now, and git-ignored). |
+## How the three hours went
 
-## Calls I rethought
-- **One ICP or one per motion?** The stub's `audience.icp_id` means a playbook *points to* an ICP. One shared ICP; a new launch changes two fields.
-- **Why my own MCP instead of HubSpot's?** Vendor MCPs give abilities but can't write an R-17 record first. R-17: "wrap it or don't send." So HubSpot sits *behind* the gate.
+**Making sense of Paul's notes.** The first thing I noticed was that the notes fight each other. The bank matters most, but I'm not allowed to contact the bank. The CRO wants 40 meetings, but Paul wants precision. I didn't try to do everything. I picked one account (the bank), one trigger (SR 26-2) and one artifact, and wrote down why in `decisions.md`. The bank won because it's the only place where R-17 is *required*, so it's where I can really prove I follow it. Pharma became "the next swap," and defense waits for Rob.
 
-## What failed / where I got stuck
-1. **Ran ~12 min over on learning.** Reading the Fed's text took longer than planned, but it flipped my assumption. Made it up by building the gate first.
-2. **MCP server wouldn't start.** Client only said "Connection closed." Ran the server by hand: a folder-path bug (`parents[2]` vs `parents[3]`). Lesson: run the server directly first.
-3. **Brief v1 overclaimed, and my checker missed it.** It caught "worth noting" but not "there is no supervisory framework." I caught that by reading. Fixed the checker, then the **prompt** (rule below), not just the text. v1 7/9 → v2 9/9.
-4. **Lost the link to my laptop twice** mid-build. Claude built in its cloud workspace and copied files over.
-5. **IDE showed missing imports** on the tests. Installed requirements, added `pyrefly.toml`. 10 passed on my Mac.
-6. **HubSpot moved Private Apps** to Legacy Apps during the run. Switched to Service Keys. Notes/tasks have no scopes of their own; they use the contacts/companies write scopes.
-7. **MCP SDK 2.x renamed `FastMCP`.** Same "Connection closed" error. Pinned `mcp<2`.
-8. **Key was set, gate still wrote locally.** The MCP client only passes an allow-list of environment variables to the server. Passed the environment through on purpose.
-9. **Pasted my HubSpot key into the AI chat** while debugging. Sandbox only; rotated it.
-10. **Can't push from the AI's shell** (no GitHub login, on purpose). It commits, I push.
+**Learning SR 26-2.** I knew nothing about it. I used ChatGPT for a quick map of the four regulations, then read the Fed's own document. That changed my plan: I expected new AI rules, but SR 26-2 actually leaves AI agents out. So the brief isn't "new rules are coming," it's "your agents aren't covered, so who is checking them?" This took longer than planned; I ran about 12 minutes over.
 
-## Snippets (the brief asks for 2–3)
-**Prompt that fixed v1** (`SKILL.md`, rule 4a):
+**Building the gate before the brief.** Since R-17 is a knockout, I built the guard first: every agent action writes an audit record before it happens, nothing sends without a named person, and the bank stays blocked until a meeting is booked. Then I wrote tests that try to break each rule. All 10 get blocked.
+
+**Asking why, not just building.** At one point I stopped and asked why we needed our own MCP server when HubSpot and Slack already have one. The answer made the design clearer to me: their tools give the agent abilities, but they can't write an R-17 record first. So their tools sit *behind* my gate. I also asked Claude to explain every file to me in simple words, because I wanted to understand what I was shipping.
+
+**Writing the brief.** Claude drafted it using the rules in `SKILL.md`, and my checker tested it.
+
+**Filling in the playbook.** The Campaign Manager stub had gaps, so I marked every guess with `_guess` and answered the three open questions in `schema-guesses.md`. I also decided the playbook should point to one shared ICP instead of copying it, so the next launch only changes two fields.
+
+**Connecting HubSpot.** With about 55 minutes left, I decided a real CRM was worth it: Paul calls HubSpot the system of record, and they grade tool range. I gave it a 25-minute limit with a fallback. It worked: the gate now reads the bank and its contacts from HubSpot, saves the brief as a note, and turns "send" into a task a person must approve. After that, I deleted the old local JSON copies of the brief and task (`crm_outbox/`), because HubSpot holds the real ones now.
+
+## What went wrong, and what I did
+
+1. **The first brief overclaimed, and my checker missed it.** It caught a banned phrase ("worth noting"), but not the real problem: the brief said there is "no supervisory framework" for agents. That's too strong, since SR 26-2 only leaves them out of *its own* scope. I caught it by reading. I fixed the checker first, then the agent's rules, not just the text. v1 scored 7/9, v2 passed 9/9. Lesson: an automatic check only finds what you thought to look for.
+2. **The MCP server wouldn't start, twice.** Both times the error only said "Connection closed." Running the server by hand showed the real cause: first a wrong folder path, later a new version of the MCP library that renamed a class. I fixed the path and pinned the library version. Lesson: run the server directly before guessing.
+3. **HubSpot had moved "Private Apps"** to a new place during the run. I switched to their Service Keys. I also learned notes and tasks don't have their own permissions; they use the contacts and companies ones.
+4. **The key was set, but the gate still saved locally.** The MCP client only passes a few safe settings to the server by default, so the server never saw my key. I passed it through on purpose.
+5. **I pasted my HubSpot key into the chat while debugging.** It was a test account, but I replaced the key afterwards.
+
+## Snippets
+**The rule I added to the agent after v1** (`SKILL.md`, rule 4a):
 ```
 Do not conclude that "no framework" exists for agents anywhere.
 Write "SR 26-2 does not cover them", not "nothing covers them".
 ```
-**Config the gate enforces** (`playbook/reign-bank-sr26-2.json`):
+**The config the gate enforces** (`playbook/reign-bank-sr26-2.json`):
 ```json
 "approval": {
   "principals": ["Paul (CEO)"],
@@ -44,12 +43,12 @@ Write "SR 26-2 does not cover them", not "nothing covers them".
   "bank_gate": "no_outbound_until_briefing_booked"
 }
 ```
-**A prompt I gave** (cleaned up from speech; see `prompts.md`):
+**A prompt I gave** (cleaned up from speech):
 > We have 55 minutes left. Should we connect HubSpot instead of using JSON files for the bank data?
 
-## With another 3 hours
-1. Slack approve/reject loop, logging who decided and when.
-2. HubSpot's own MCP behind the gate; `briefing_booked` read from HubSpot meetings.
-3. An LLM judge for overclaims, on top of the regex (the regex missed one).
-4. Check FDA PCCP scope, then run the pharma swap (change `audience` + `trigger`).
-5. OSFI E-23: how Canada treats GenAI.
+## With another three hours
+1. A Slack approve/reject step that logs who approved and when.
+2. HubSpot's own MCP behind the gate, and "meeting booked" read straight from HubSpot.
+3. A second, AI-based check for overclaims, since the simple one missed one.
+4. Confirm FDA PCCP really applies to a pharma quality team, then run the pharma swap.
+5. Look at OSFI E-23 to see how Canada treats AI agents.
