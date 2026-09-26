@@ -44,8 +44,8 @@ Write "SR 26-2 does not cover them", not "nothing covers them".
   "bank_gate": "no_outbound_until_briefing_booked"
 }
 ```
-**A real prompt I gave:**
-> Now that we still have 55 minutes, do you think it's better to connect HubSpot instead of having JSON files for the bank account...?
+**A prompt I gave** (cleaned up from speech; see `prompts.md`):
+> We have 55 minutes left. Should we connect HubSpot instead of using JSON files for the bank data?
 
 ## With another 3 hours
 1. Slack approve/reject loop, logging who decided and when.

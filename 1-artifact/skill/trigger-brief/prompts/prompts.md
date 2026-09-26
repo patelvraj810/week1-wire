@@ -1,31 +1,38 @@
-# Prompts I actually used
+# Prompts I used
 
-Copied exactly as I wrote them (typos included). Tools: **Claude (Cowork)** as my build partner, **ChatGPT** for one research overview. The agent's own prompt is [`../SKILL.md`](../SKILL.md).
+Tools: **Claude (Cowork)** as my build partner, **ChatGPT** for one research overview. The agent's own prompt is [`../SKILL.md`](../SKILL.md).
 
-## 1. Decisions + ICP (Claude)
-> Can you write them for me based on what we have decided so far?
+> **Note:** I mostly spoke my prompts, so the originals were rough. The Claude prompts below are cleaned up for grammar and clarity; the meaning and the order are exactly what I asked. The ChatGPT prompt is word for word.
 
-"Them" = `decisions.md` and `icp.yaml`. I made the calls first, then had Claude write them up, and reviewed before committing.
+## 1. Write up my decisions (Claude)
+> Based on what we've decided so far, write `decisions.md` and `icp.yaml` for me. Keep my calls as they are: bank only, pharma is the next swap, defense waits for Rob. Mark anything we invented.
 
-## 2. Learning the regulations (ChatGPT)
+I reviewed both files before committing.
+
+## 2. Learn the regulations (ChatGPT, word for word)
 > Give me details about the following acts and how they would affect a company that is selling secured AI to banks, pharma, and defence: EU AI Act, SR 26-2, DORA, or FDA PCCP) on marketing perspective
 
-Used for the map only. I then checked the key SR 26-2 claim against the Federal Reserve's own text (`references/sr-26-2.md`).
+Used for the map only. I checked the key SR 26-2 claim against the Federal Reserve's own text.
 
-## 3. Questioning the design (Claude)
-> I want to understand something about the MCP server. They're asking if we really need to make our own MCP server. Can we not just use an app that has their own MCP? ... Also, what this exactly does—the one you have created—is it just helping us connect to HubSpot? Can we not just do it via HubSpot's MCP or HubSpot's connector or API?
+## 3. Explain the code to me (Claude)
+> I don't understand all of these files yet. Explain each file you created in simple English: what it does and why it's needed. Don't change anything, just explain.
 
-Answer that shaped the build: vendor MCPs give the agent abilities, but can't write an R-17 record first. So vendor tools go *behind* the gate.
+I wanted to be able to defend every file myself, not just ship it.
 
-## 4. Pushing for honesty in the log (Claude)
-> All right, let's get onto block three. And also let's focus on what failed and where I got stuck as well.
+## 4. Question the design (Claude)
+> Do we really need our own MCP server? Why not use HubSpot's or Slack's MCP directly, since they already exist? Is the one you built just a HubSpot connector?
 
-## 5. Choosing HubSpot over mock data (Claude)
-> Now that we still have 55 minutes, do you think it's better to connect HubSpot instead of having JSON files for the bank account and this stuff? I would prefer HubSpot over anything, right? Or what would they prefer? They really don't want anyone who is just marketing or just technical. They want a mixture of both, right?
+The answer shaped the build: vendor MCPs give the agent abilities but can't write an R-17 record first, so they go *behind* the gate.
+
+## 5. Record what went wrong (Claude)
+> Start the build, and keep track of what fails and where I get stuck as we go. I want that in the process log.
+
+## 6. Decide on HubSpot (Claude)
+> We have 55 minutes left. Should we connect HubSpot instead of using JSON files for the bank data? They want someone who is both technical and GTM, not just one.
 
 Result: HubSpot connected with a 25-minute timebox and a local fallback.
 
-## 6. The agent's prompt (SKILL.md, excerpt)
+## 7. The agent's prompt (`SKILL.md`, excerpt)
 The rule added after brief v1 overclaimed:
 ```
 4a. Say only what the exclusion means for THIS guidance. Do not conclude that
