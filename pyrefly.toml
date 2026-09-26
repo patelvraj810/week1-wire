@@ -1,0 +1,2 @@
+# Tells the IDE type checker where the gate module lives (the tests add this path at runtime).
+search-path = ["1-artifact/mcp/reign_gate"]
