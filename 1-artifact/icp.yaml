@@ -1,0 +1,62 @@
+# Living ICP for the Reign first motion.
+# Anything marked [INVENTED: why] is my guess, not something the packet gave me.
+# Anything marked [UNVETTED] came from the Slack notes and needs confirmation.
+
+version: 0.1.0
+updated_by: vraj
+base_criteria:           # Paul: "regulated enterprise, 5k+ employees, already has agents in production or about to"
+  regulated: true
+  min_employees: 5000
+  agents_in_production_or_planned: true
+  requires_risk_committee: true   # [UNVETTED] Rob: "if they do not have a risk committee we are wasting the briefing"
+
+segments:
+
+  - id: dsib-bank
+    status: active
+    financial_services: true        # R-17 audit is REQUIRED
+    example: "the Canadian bank on Forge"   # existing Forge customer
+    relationship: existing_customer
+    triggers: [SR-26-2, DORA]       # SR-26-2 primary for this run; DORA is the fallback
+    buyers:                         # [INVENTED: the sketch left "? engineering vs risk"; these are the usual owners of model risk and AI platforms at a large bank]
+      risk_lane: [Chief Audit Executive, Head of Model Risk Management, Chief Risk Officer]
+      engineering_lane: [VP Engineering, Head of AI Platform, CTO]
+    routing: infer_from_title       # Paul: "Route them without asking"
+    channel: briefing               # brief goes to the internal Forge account owner, not to the bank
+    gate: no_outbound_until_briefing_booked   # exception: live regulatory trigger → brief to account owner only
+    do_not: [make them pick a lane, generic AI governance sequence, cold outbound]
+
+  - id: biopharma-quality
+    status: next                    # next swap in the same playbook; not built this round
+    financial_services: false       # R-17 recommended; audit switched on anyway
+    buyers: [Head of Quality, Head of Regulatory Affairs]   # from the sketch: "Quality / RA"
+    triggers: [FDA-PCCP]
+    do_not: [thought-leadership blog]
+
+  - id: defense-supplier
+    status: parked
+    financial_services: false
+    reason: "Forge-first, Reign later. Open question for Rob."
+    triggers: [CMMC]                # [INVENTED: the sketch has "CMMC?" with a question mark]
+
+  - id: semiconductor
+    status: parked
+    financial_services: false
+    condition: us_export_control_problem   # Paul: "only if they have a US export-control problem"
+    reason: "No buyer or trigger defined yet."
+
+  - id: hospitals
+    status: parked
+    reason: "Website says 'banks, hospitals, and defense', but 'do not spray hospitals this month'."
+
+  - id: canada-federal
+    status: parked
+    reason: "[UNVETTED] One Slack mention. Needs Paul's confirmation."
+
+  - id: ai-native-saas-startups
+    status: removed
+    reason: "Paul: 'Someone put AI startups on a list. Remove them.'"
+
+  - id: mid-market-saas
+    status: removed
+    reason: "Paul: 'Do not include mid-market SaaS.'"
