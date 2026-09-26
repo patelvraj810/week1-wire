@@ -27,6 +27,7 @@ SR 26-2 fires ──► agent (SKILL.md) drafts brief ──► reign_gate check
 
 ```
 pip install -r requirements.txt
+export HUBSPOT_TOKEN=...   # optional: HubSpot service key (companies + contacts read/write); without it, local fallback
 pytest 1-artifact/evals -q                                                        # 10 R-17 governance tests, all must block
 python 1-artifact/evals/brief_eval.py 1-artifact/briefs/northmere-sr26-2-v2.md    # brief checks (v1 fails, v2 passes)
 ```
@@ -57,12 +58,12 @@ Optional: `python 1-artifact/evals/demo_mcp_calls.py` drives the MCP server like
 | **ChatGPT** | First overview of the four regulations. Treated as unverified; checked against the Fed's text. |
 | **MCP (Python SDK)** | `reign_gate`, the custom MCP server |
 | **pytest** | Evals |
-| **HubSpot** | Wired but not live: `save_brief` writes a HubSpot note if `HUBSPOT_TOKEN` is set; otherwise to `crm_outbox/` |
+| **HubSpot** | **Live, behind the gate.** The gate reads Northmere and its contacts from HubSpot; `save_brief` wrote the v2 brief as a note on the company and `request_send` created an approval task (High priority, not started). Nothing emails anyone. Without `HUBSPOT_TOKEN` it falls back to `fixtures/` and `crm_outbox/`. |
 | **Clay, ZoomInfo** | Not available; mocked with fixtures. Day-one plan in `day-one-wiring.md`. |
 
 ## Real vs mocked
 
-- **Real:** the MCP server, the gate's rules, the tests, the audit log, the SR 26-2 research, the brief and its eval.
-- **Mocked:** the bank and its people (fictional), enrichment (fixture instead of Clay/ZoomInfo), the CRM (local outbox unless a HubSpot token is set), approvals (task file instead of Slack).
+- **Real:** the MCP server, the gate's rules, the tests, the audit log, the SR 26-2 research, the brief and its eval, **and the HubSpot sandbox** (fictional company + 3 contacts; brief saved as a note and approval task through the gate).
+- **Mocked:** the bank and its people (fictional), enrichment (fixture instead of Clay/ZoomInfo), approvals (a HubSpot task instead of a Slack approve/reject loop).
 
 `reign_gate` = the R-17 gate, plus Paul's rule ("everything that sends needs a named human") and the bank briefing rule.

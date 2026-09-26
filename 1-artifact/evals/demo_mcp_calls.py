@@ -1,6 +1,7 @@
 """Drive the reign-gate MCP server over stdio, the same way an agent would.
 Writes real records to 1-artifact/audit/audit-log.jsonl.  Run: python 1-artifact/evals/demo_mcp_calls.py"""
 import asyncio
+import os
 import json
 import sys
 from pathlib import Path
@@ -30,7 +31,8 @@ CALLS = [
 
 
 async def main():
-    server = StdioServerParameters(command=sys.executable, args=[str(ART / "mcp" / "reign_gate" / "server.py")])
+    server = StdioServerParameters(command=sys.executable, args=[str(ART / "mcp" / "reign_gate" / "server.py")],
+                                    env=dict(os.environ))  # MCP stdio only forwards an allow-list of env vars by default; pass HUBSPOT_TOKEN through
     async with stdio_client(server) as (r, w), ClientSession(r, w) as s:
         await s.initialize()
         print("tools:", [t.name for t in (await s.list_tools()).tools])

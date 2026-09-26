@@ -12,6 +12,7 @@
 | Build: skill | `SKILL.md` + brief eval. v1 failed, v2 passed 9/9, saved through the gate. |
 | Playbook | Full Campaign Manager JSON with a `_guess` on every undefined field; `schema-guesses.md`. The gate reads it; tests still pass. |
 | Docs | Day-one wiring, would-not-ship, this log, README. |
+| HubSpot | Connected with ~55 min left: sandbox company + 3 fictional contacts; the gate now reads from HubSpot and writes the brief as a note and the approval as a task. Verified in HubSpot. |
 
 ## Design calls I rethought
 
@@ -25,6 +26,10 @@
 - **Brief v1 failed, and so did my eval.** The eval caught "worth noting" (banned). Reading it myself, I found a worse problem it missed: "there is no supervisory framework for them" overclaims, since SR 26-2 only excludes agents from *its* scope. Fixed the eval, re-ran v1 (7/9), then fixed the **prompt** (`SKILL.md` rules 4a, 4b), not just the draft. v2: 9/9.
 - **Lost the link to my laptop twice.** Claude builds on my machine through a desktop bridge; when it dropped, it built and tested in its cloud workspace and copied the files over later.
 - **IDE showed missing imports** on the tests (pytest not installed; the gate's path added at runtime). Installed requirements, added `pyrefly.toml`. Tests: 10 passed on my Mac.
+- **HubSpot moved private apps mid-run.** "Private Apps" now redirects to "Legacy Apps", which pushes you to Service Keys. Used a Service Key. Notes and tasks have no scopes of their own; they ride on `crm.objects.contacts.write` / `companies.write`.
+- **MCP SDK version mismatch.** My Mac installed MCP 2.x, which renamed `FastMCP`; the client again only said "Connection closed". Pinned `mcp<2` in `requirements.txt`.
+- **Key set, lookup worked, but the gate still wrote locally.** The MCP stdio client only forwards an allow-list of environment variables to the server it launches, so the server never saw `HUBSPOT_TOKEN`. Passed the environment through explicitly. Worth knowing: that default is a safety feature, and it's why secrets didn't leak into the server by accident.
+- **Pasted the HubSpot key into my AI chat while debugging.** Sandbox only, but rotated it afterwards.
 - **Pushing:** the AI has no GitHub login (I'm not handing it a token). It commits; I push.
 
 ## Prompts and configs

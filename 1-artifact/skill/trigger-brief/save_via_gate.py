@@ -2,6 +2,7 @@
 to hand it to the internal account owner under the trigger exception. Never sends to the bank.
 Run: python 1-artifact/skill/trigger-brief/save_via_gate.py 1-artifact/briefs/northmere-sr26-2-v2.md"""
 import asyncio
+import os
 import json
 import sys
 from pathlib import Path
@@ -18,7 +19,8 @@ PURPOSE = "Store the SR 26-2 agentic-AI scope-gap brief for Northmere's CAE for 
 
 async def main(brief_path: str):
     brief = Path(brief_path).read_text()
-    server = StdioServerParameters(command=sys.executable, args=[str(ART / "mcp" / "reign_gate" / "server.py")])
+    server = StdioServerParameters(command=sys.executable, args=[str(ART / "mcp" / "reign_gate" / "server.py")],
+                                    env=dict(os.environ))  # MCP stdio only forwards an allow-list of env vars by default; pass HUBSPOT_TOKEN through
     async with stdio_client(server) as (r, w), ClientSession(r, w) as s:
         await s.initialize()
         for name, args in [
