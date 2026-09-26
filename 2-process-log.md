@@ -12,7 +12,7 @@
 | Build: skill | `SKILL.md` + brief eval. v1 failed, v2 passed 9/9, saved through the gate. |
 | Playbook | Full Campaign Manager JSON with a `_guess` on every undefined field; `schema-guesses.md`. The gate reads it; tests still pass. |
 | Docs | Day-one wiring, would-not-ship, this log, README. |
-| HubSpot | Connected with ~55 min left: sandbox company + 3 fictional contacts; the gate now reads from HubSpot and writes the brief as a note and the approval as a task. Verified in HubSpot. |
+| HubSpot | Connected with ~55 min left: sandbox company + 3 fictional contacts; the gate now reads from HubSpot and writes the brief as a note and the approval as a task. Verified in HubSpot. Deleted the old local `crm_outbox/` files: HubSpot now holds the real note and task, and the folder is git-ignored (it's only used as a fallback when no key is set). |
 
 ## Design calls I rethought
 
